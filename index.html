@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend Info Collector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #ffa000; text-align: center; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #555; font-size: 14px; }
+        input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #ffa000; }
+        button { width: 100%; padding: 12px; background: #ffa000; border: none; border-radius: 8px; color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #f57c00; }
+        #message { text-align: center; margin-top: 15px; font-size: 14px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Friend, Give Your Info</h2>
+    <div class="form-group">
+        <label>Name</label>
+        <input type="text" id="name" placeholder="Enter your name">
+    </div>
+    <div class="form-group">
+        <label>Mobile Number</label>
+        <input type="tel" id="mobile" placeholder="017XXXXXXXX">
+    </div>
+    <div class="form-group">
+        <label>Age</label>
+        <input type="number" id="age" placeholder="Enter your age">
+    </div>
+    <button onclick="submitData()">Send Information</button>
+    <p id="message"></p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqdmgZEVFTq2pxXrWq4PHSe1xT07lAhC0",
+        authDomain: "my-data-54b1b.firebaseapp.com",
+        projectId: "my-data-54b1b",
+        storageBucket: "my-data-54b1b.firebasestorage.app",
+        messagingSenderId: "619216127782",
+        appId: "1:619216127782:web:3ecbdb1aa7ef1dd1f4a3e7",
+        measurementId: "G-NJHJZW1GP2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function submitData() {
+        const name = document.getElementById("name").value;
+        const mobile = document.getElementById("mobile").value;
+        const age = document.getElementById("age").value;
+        const msg = document.getElementById("message");
+
+        if(name === "" || mobile === "" || age === "") {
+            alert("Please fill all the fields!");
+            return;
+        }
+
+        db.collection("user-1").add({
+            friendName: name,
+            mobileNo: mobile,
+            age: age,
+            time: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => {
+            msg.style.display = "block";
+            msg.style.color = "green";
+            msg.innerText = "Success! Data sent to Firebase.";
+            
+            // Clear inputs
+            document.getElementById("name").value = "";
+            document.getElementById("mobile").value = "";
+            document.getElementById("age").value = "";
+        })
+        .catch((error) => {
+            msg.style.display = "block";
+            msg.style.color = "red";
+            msg.innerText = "Error sending data!";
+        });
+    }
+</script>
+
+</body>
+</html>
